@@ -6,14 +6,26 @@ const app = express();
 
 app.use(bodyParser.json())
 const PORT = 4000;
-
+const events=[];
 app.use('/graphql', expressGraphQL({
     schema:buildSchema(`
+    type Event{
+        title: String!
+        description: String!
+        price: Float!
+    }
+
+    input inputEvent{
+        title: String!
+        description: String!
+        price: Float!
+    }
+
     type RootQuery {
-        events:[String!]!
+        events:[Event!]!
     }
     type RootMutation{
-        createEvents(name:String): String
+        createEvents(eventInput:inputEvent): Event
     } 
     schema {
         query:RootQuery
@@ -22,11 +34,17 @@ app.use('/graphql', expressGraphQL({
     `),
     rootValue:{
         events:()=>{
-            return ['ABC','DEF','GHI'];
+            return events;
         },
         createEvents:(args)=>{
-            const eventName = args.name
-            return eventName
+            console.log(args.eventInput.title)
+            const event ={
+                title:args.eventInput.title,
+                description:args.eventInput.description,
+                price:args.eventInput.price
+            };
+            events.push(event)
+            return event
         }//resolver fun match to schema
     },
     graphiql:true  
