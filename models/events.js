@@ -13,7 +13,11 @@ var EventSchema = new Schema({
     price:{
         type:Number,
         required:true
-    }
+    },
+    creator:{
+        type:Schema.Types.ObjectId,
+        ref:'User'
+        }
 })
 
-module.exports = mongoose.model("Events",EventSchema)
+module.exports = mongoose.model("Event",EventSchema)
